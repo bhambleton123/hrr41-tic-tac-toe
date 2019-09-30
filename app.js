@@ -21,15 +21,20 @@ let addListeners = function(callback){
                 amountClicks++;
             }
             currentToggled.push([this.parentNode.rowIndex, this.cellIndex, this.innerHTML]);
-            if(callback(currentToggled)){
-                alert("You won");
+            if(callback(currentToggled)[0]){
+                for(var i=0; i<9; i++){
+                    document.getElementsByTagName("TD")[i].innerHTML = "";
+                }
+                console.log(callback(currentToggled));
+                alert(callback(currentToggled)[1] + " is the winner.");
+                currentToggled = [];
             }
         })
     }
 }
 // //returns a boolean value on whether or not there is a winner on each click (Will be placed in initgame inside click handlers)
 let checkIfWon = function(toggled){
-    let winner = false;
+    let winner = [false, null];
     let negativeDiagonal = []
     let positiveDiagonal = []
     let h1 = []
@@ -76,11 +81,16 @@ let checkIfWon = function(toggled){
         }
     }
     function checkIfSameValues(array){
-        let valueCount = 0;
+        let valueCount = [0,0,null];
 
         for(var i=0; i<array.length; i++){
             if(array[i] === 'X'){
-                valueCount++;
+                valueCount[0]++;
+                valueCount[2] = 'X';
+            }
+            else if(array[i] === 'O'){
+                valueCount[1]++;
+                valueCount[2] = 'O';
             }
         }
 
@@ -91,8 +101,8 @@ let checkIfWon = function(toggled){
     let awesomeArray = [negativeDiagonal, positiveDiagonal, h1, h2, h3, v1, v2, v3];
     for(var i=0; i<awesomeArray.length; i++){
         console.log("Checking", checkIfSameValues(awesomeArray[i]));
-        if(checkIfSameValues(awesomeArray[i]) === 3){
-            winner = true;
+        if(checkIfSameValues(awesomeArray[i])[0] === 3 || checkIfSameValues(awesomeArray[i])[1] === 3){
+            winner = [true, checkIfSameValues(awesomeArray[i])[2]];
             break;
         }
     }
